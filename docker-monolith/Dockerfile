@@ -5,6 +5,9 @@ RUN apt-get install -y mongodb-server ruby-full ruby-dev build-essential git
 RUN gem install bundler
 RUN git clone -b monolith https://github.com/express42/reddit.git
 
+#для старта приложени ядобавить строку:
+RUN sed -i "s/'mongo'$/'mongo', '~> 2.0.0'/" reddit/Gemfile
+
 COPY mongod.conf /etc/mongod.conf
 COPY db_config /reddit/db_config
 COPY start.sh /start.sh
