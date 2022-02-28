@@ -10,3 +10,6 @@ ubuntu16.json
 .jdauphant.nginx
 jdauphant.nginx
 vault.key
+
+#for_docker-4
+.env
