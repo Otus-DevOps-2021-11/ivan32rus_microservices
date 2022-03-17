@@ -1,6 +1,5 @@
-# ivan32rus_microservices
-ivan32rus microservices repository
+# Выполнено согласно методичке
 
-#согласно методичке
-#доп. дз *
+# выполнено доп. дз
 
+ 
