@@ -12,7 +12,7 @@ services:
   
   blackbox-exporter:
     image: prometheus/blackbox_exporter:v0.20.0
-     user: root
+    user: root
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
