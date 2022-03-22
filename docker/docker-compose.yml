@@ -1,40 +1,14 @@
 version: '3.3'
 
 services:
-  #post_db:
-    #build: ../src/ui
-  #  image: mongo:${SERVICE_MONGO}
-  #  volumes:
-  #    - post_db:/data/db
-  #  networks:
-  #    - reddit
-  #    - back_net
-  
-  blackbox-exporter:
-    image: prometheus/blackbox_exporter:v0.20.0
-    user: root
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"' 
+  post_db:
+    image: mongo:${SERVICE_MONGO}
+#    volumes:
+#      - post_db:/data/db
+    networks:
+      #- reddit
+      - back_net
 
-  mongo-exporter:
-    image:  percona/mongodb_exporter:v2.26.0 
-    user: root
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-     
-    
   node-exporter:
     image: prom/node-exporter:v0.15.2
     user: root
@@ -52,9 +26,17 @@ services:
     image: ${USER_NAME}/ui:${SERVICE_UI}
     ports:
       - ${PORT_UI}:${PORT_UI}/${PROTOCOL}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     networks:
       #- reddit
       - front_net
+    
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
 
   post:
     build: ../src/post-py
@@ -63,7 +45,24 @@ services:
       #- reddit
       - front_net
       - back_net 
-   
+
+    environment:
+      - POST_DATABASE_HOST=post_db
+      - POST_DATABASE=posts
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+    depends_on:
+      - post_db  
+    ports:
+      - "5000:5000"
+ 
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.post
+
+#----
+
   comment:  
     build: ../src/comment
     image: ${USER_NAME}/comment:${SERVICE_COMMENT}
@@ -81,6 +80,8 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     ports:
       - 9090:9090
     networks:
