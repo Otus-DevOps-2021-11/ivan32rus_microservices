@@ -1,0 +1,6 @@
+[master]
+master ansible_host=62.84.124.227
+
+[worker]
+worker ansible_host=62.84.125.183
+
