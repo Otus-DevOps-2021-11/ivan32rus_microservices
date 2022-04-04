@@ -1,5 +1,5 @@
 #!/bin/sh
-sudo hostnamectl set-hostname k8s-master1.local
+#sudo hostnamectl set-hostname k8s-master1.local
 apt-get update
 sudo apt-get install docker docker.io
 sudo systemctl enable docker
