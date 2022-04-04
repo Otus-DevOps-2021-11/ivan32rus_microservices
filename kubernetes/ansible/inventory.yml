@@ -1,0 +1,10 @@
+master:
+  hosts:
+    k8s-master1:
+      ansible_host: 62.84.124.227
+
+worker:
+  hosts:
+    k8s-worker1:
+      ansible_host: 62.84.125.183
+

@@ -1,0 +1,6 @@
+- name: init docker mashine
+  hosts: worker1
+  tasks:
+
+     - name: Copy and Execute the script 
+       script: ../packer/scripts/docker_init.sh
