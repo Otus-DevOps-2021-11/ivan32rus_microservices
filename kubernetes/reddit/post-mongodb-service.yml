@@ -15,5 +15,4 @@ spec:
   selector:
     app: reddit
     component: mongo
-    post-db: "true"
 
